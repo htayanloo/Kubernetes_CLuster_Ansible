@@ -1,0 +1,85 @@
+ How To Create a Kubernetes 1.10 Cluster Using Kubeadm on CentOS 7
+
+
+One master node
+
+Two worker nodes
+
+
+Prerequisites::
+
+An SSH key pair on your local Linux/macOS/BSD machine. If you haven't used SSH keys before, you can learn how to set them up by following this explanation of how to set up SSH keys on your local machine.
+
+Three servers running CentOS 7 with at least 1GB RAM. You should be able to SSH into each server as the root user with your SSH key pair. Be sure to also add your public key to the centos user's account on the master node. If you need guidance on adding an SSH key to a particular user account, see this tutorial on How To Set Up SSH Keys on CentOS7.
+
+Ansible installed on your local machine. For installation instructions, follow the official Ansible installation documentation.
+
+
+##Step 1 — Setting Up the Workspace Directory and Ansible Inventory File
+
+
+change Directory to ~/Mastering-Ansible/Senario/Ansible/Kubernetes
+
+change ips in hosts file with your lab ips
+##############################################################
+[masters]
+master ansible_host=master_ip ansible_user=root
+
+[workers]
+worker1 ansible_host=worker_1_ip ansible_user=root
+worker2 ansible_host=worker_2_ip ansible_user=root
+##############################################################
+
+
+##Step 2 — Installing Kubernetes' Dependencies
+
+Run command :
+
+$ ansible-playbook -i hosts ~/kube-cluster/kube-dependencies.yml
+
+
+##Step 4 — Setting Up the Master Node
+
+Run command :
+
+$ ansible-playbook -i hosts ~/kube-cluster/master.yml
+
+test installation:
+
+Run command:
+
+$ ssh centos@master_ip
+
+$ kubectl get nodes
+
+Output
+NAME      STATUS    ROLES     AGE       VERSION
+master    Ready     master    1d        v1.10.12
+
+
+
+##Step 5 — Setting Up the Worker Nodes
+
+
+Run command :
+
+$ ansible-playbook -i hosts ~/kube-cluster/workers.yml
+
+
+
+##Step 6 — Verifying the Cluster
+
+Run command : 
+
+$ ssh centos@master_ip
+
+$ kubectl get nodes
+
+Output
+NAME      STATUS    ROLES     AGE       VERSION
+master    Ready     master    1d        v1.10.12
+worker1   Ready     <none>    1d        v1.10.12
+worker2   Ready     <none>    1d        v1.10.12
+
+
+
